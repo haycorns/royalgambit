@@ -29,7 +29,7 @@ export class RoyalGambitGame extends Chess {
     const blackCourt = this.cardSystem.dealCards(3)
 
     return {
-      currentPlayer: 'white',
+      currentPlayer: this.turn() === 'w' ? 'white' : 'black',
       hands: {
         white: whiteHand,
         black: blackHand
@@ -62,7 +62,7 @@ export class RoyalGambitGame extends Chess {
           player: this.gameState.currentPlayer,
           timestamp: Date.now()
         })
-        this.endTurn()
+        this.syncTurnWithChess()
         return true
       }
       return false
@@ -70,6 +70,12 @@ export class RoyalGambitGame extends Chess {
       console.error('Invalid chess move:', error)
       return false
     }
+  }
+
+  private syncTurnWithChess(): void {
+    // Sync game state turn with chess.js turn after chess moves
+    const chessTurn = this.turn()
+    this.gameState.currentPlayer = chessTurn === 'w' ? 'white' : 'black'
   }
 
   /**
@@ -167,8 +173,8 @@ export class RoyalGambitGame extends Chess {
     // Basic validation - can be expanded based on specific rules
     switch (effect.type) {
       case 'rescue':
-        // Hearts: Must target your own piece
-        return target ? this.isOwnPiece(target) : false
+        // Hearts: Must target an empty square to move piece to
+        return target ? !this.get(target as Square) : false
       
       case 'upgrade':
         // Diamonds: Must target a pawn (or any piece if Ace)
@@ -217,24 +223,123 @@ export class RoyalGambitGame extends Chess {
 
   private applyRescueEffect(card: Card, effect: CardEffect, target: string): boolean {
     // Hearts: Move piece to any empty square
-    // TODO: Implement piece rescue logic
-    // This is a technical spike - basic implementation
     console.log(`RESCUE: Moving piece from ${target} (effect: ${effect.isPowerChain ? 'Power Chain' : 'Normal'})`)
+    
+    // Check if target square is empty
+    const targetPiece = this.get(target as Square)
+    if (targetPiece) {
+      return false // Cannot rescue to occupied square
+    }
+    
+    // Find a piece to rescue (prioritize King if in check, otherwise any own piece)
+    const currentColor = this.turn()
+    let pieceToRescue = null
+    let fromSquare = null
+    
+    // If Ace and King is in check, rescue the King
+    if (effect.isAce && this.inCheck()) {
+      const board = this.board()
+      for (let rank = 0; rank < 8; rank++) {
+        for (let file = 0; file < 8; file++) {
+          const piece = board[rank][file]
+          if (piece && piece.type === 'k' && piece.color === currentColor) {
+            fromSquare = String.fromCharCode(97 + file) + (8 - rank)
+            pieceToRescue = piece
+            break
+          }
+        }
+        if (pieceToRescue) break
+      }
+    } else {
+      // Find any own piece to rescue (prefer pieces under attack or with limited mobility)
+      const board = this.board()
+      for (let rank = 0; rank < 8; rank++) {
+        for (let file = 0; file < 8; file++) {
+          const piece = board[rank][file]
+          if (piece && piece.color === currentColor) {
+            fromSquare = String.fromCharCode(97 + file) + (8 - rank)
+            pieceToRescue = piece
+            break // Take first available piece for now
+          }
+        }
+        if (pieceToRescue) break
+      }
+    }
+    
+    if (!pieceToRescue || !fromSquare) {
+      return false
+    }
+    
+    // Remove piece from current position and place at target
+    this.remove(fromSquare as Square)
+    this.put(pieceToRescue, target as Square)
+    
     return true
   }
 
   private applyUpgradeEffect(card: Card, effect: CardEffect, target: string): boolean {
     // Diamonds: Promote pawn to queen (or any piece if Ace)
-    // TODO: Implement promotion logic
     console.log(`UPGRADE: Promoting piece at ${target} (Ace: ${effect.isAce}, Power Chain: ${effect.isPowerChain})`)
+    
+    const piece = this.get(target as Square)
+    if (!piece || piece.color !== this.turn()) {
+      return false // Can only upgrade own pieces
+    }
+    
+    // For normal Diamonds, only upgrade pawns to queens
+    if (!effect.isAce && piece.type !== 'p') {
+      return false
+    }
+    
+    // Remove old piece and place upgraded piece
+    this.remove(target as Square)
+    
+    if (effect.isAce) {
+      // Ace can upgrade any piece to any piece (default to queen)
+      this.put({ type: 'q', color: piece.color }, target as Square)
+    } else {
+      // Normal diamonds: pawn to queen
+      this.put({ type: 'q', color: piece.color }, target as Square)
+    }
+    
     return true
   }
 
   private applySwapEffect(card: Card, effect: CardEffect): boolean {
     // Clubs: Swap two pieces
-    // TODO: Implement swap logic
     console.log(`SWAP: Swapping pieces (Ace: ${effect.isAce}, Power Chain: ${effect.isPowerChain})`)
-    return true
+    
+    // For now, implement a simple version that swaps two own pieces
+    // This needs to be improved to handle targeting specific pieces
+    const board = this.board()
+    const currentColor = this.turn()
+    const ownPieces = []
+    
+    // Find own pieces
+    for (let rank = 0; rank < 8; rank++) {
+      for (let file = 0; file < 8; file++) {
+        const piece = board[rank][file]
+        if (piece && piece.color === currentColor) {
+          const square = String.fromCharCode(97 + file) + (8 - rank)
+          ownPieces.push({ piece, square })
+        }
+      }
+    }
+    
+    // Swap first two pieces found (simplified implementation)
+    if (ownPieces.length >= 2) {
+      const piece1 = ownPieces[0]
+      const piece2 = ownPieces[1]
+      
+      this.remove(piece1.square as Square)
+      this.remove(piece2.square as Square)
+      this.put(piece1.piece, piece2.square as Square)
+      this.put(piece2.piece, piece1.square as Square)
+      
+      return true
+    }
+    
+    return false
   }
 
   private applyStrikeEffect(card: Card, effect: CardEffect, target: string): boolean {
@@ -275,7 +380,7 @@ export class RoyalGambitGame extends Chess {
       }
     }
 
-    // Switch turns
+    // Switch turns for card plays (independent of chess moves)
     this.gameState.currentPlayer = this.gameState.currentPlayer === 'white' ? 'black' : 'white'
   }
 
