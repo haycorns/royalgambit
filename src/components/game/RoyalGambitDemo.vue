@@ -200,9 +200,22 @@ onMounted(() => {
 
 <style scoped>
 .royal-gambit-demo {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
+  background: #2d2d2d;
+  color: #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  min-height: 100vh;
+}
+
+h1 {
+  color: #64b5f6;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .demo-controls {
@@ -210,88 +223,172 @@ onMounted(() => {
   gap: 1rem;
   margin-bottom: 2rem;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .btn-primary, .btn-secondary, .btn-clear {
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .btn-primary {
-  background: #4CAF50;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
   color: white;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #45a049, #3d8b40);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .btn-secondary {
-  background: #2196F3;
+  background: linear-gradient(135deg, #2196F3, #1976D2);
   color: white;
 }
 
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #1976D2, #1565C0);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
 .btn-clear {
-  background: #ff9800;
+  background: linear-gradient(135deg, #ff9800, #f57c00);
   color: white;
+}
+
+.btn-clear:hover {
+  background: linear-gradient(135deg, #f57c00, #ef6c00);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .game-info {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
+  gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
+.current-player, .power-chain-status, .player-hand, .court-cards {
+  background: #3d3d3d;
+  border: 2px solid #505050;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
 .current-player h3, .power-chain-status h3, .player-hand h3, .court-cards h3 {
-  margin-bottom: 0.5rem;
-  color: #333;
+  margin-bottom: 1rem;
+  color: #64b5f6;
+  font-size: 1.3rem;
+  border-bottom: 2px solid #42a5f5;
+  padding-bottom: 0.5rem;
+}
+
+.current-player p, .power-chain-status p {
+  color: #b0b0b0;
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
 }
 
 .cards {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
 .card {
-  background: white;
-  border: 2px solid #333;
-  border-radius: 4px;
-  padding: 0.5rem;
+  background: linear-gradient(135deg, #4a4a4a, #5a5a5a);
+  border: 2px solid #42a5f5;
+  border-radius: 8px;
+  padding: 0.75rem;
   cursor: pointer;
-  min-width: 40px;
+  min-width: 60px;
   text-align: center;
   font-weight: bold;
+  color: #e0e0e0;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .card:hover {
-  background: #f0f0f0;
+  background: linear-gradient(135deg, #5a5a5a, #6a6a6a);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  border-color: #29b6f6;
 }
 
 .court-card {
-  background: #ffe0b3;
+  background: linear-gradient(135deg, #6d4c41, #8d6e63);
+  border-color: #ffb74d;
+  color: #ffffff;
+}
+
+.court-card:hover {
+  background: linear-gradient(135deg, #8d6e63, #a1887f);
+  border-color: #ffa726;
 }
 
 .chess-board-placeholder {
   margin-bottom: 2rem;
+  background: #3d3d3d;
+  border: 2px solid #505050;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  overflow-x: auto;
+}
+
+.chess-board-placeholder h3 {
+  color: #64b5f6;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #42a5f5;
+  padding-bottom: 0.5rem;
+}
+
+.chess-board-placeholder p {
+  color: #b0b0b0;
+  font-family: monospace;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: #505050;
+  border-radius: 4px;
+  word-break: break-all;
+  overflow-x: auto;
 }
 
 .board-grid {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   gap: 1px;
-  max-width: 400px;
-  border: 2px solid #333;
+  width: 520px;
+  max-width: none;
+  border: 3px solid #64b5f6;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  margin: 0 auto;
 }
 
 .square {
-  width: 40px;
-  height: 40px;
+  width: 64px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
+  font-size: 1.2rem;
   font-weight: bold;
+  color: #2c3e50;
 }
 
 .square.light {
@@ -300,24 +397,66 @@ onMounted(() => {
 
 .square.dark {
   background: #b58863;
+  color: #ffffff;
 }
 
 .console-output {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 1rem;
-  background: #f9f9f9;
+  border: 2px solid #505050;
+  border-radius: 8px;
+  padding: 1.5rem;
+  background: #3d3d3d;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.console-output h3 {
+  color: #64b5f6;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #42a5f5;
+  padding-bottom: 0.5rem;
 }
 
 .console-content {
-  max-height: 300px;
+  max-height: 400px;
   overflow-y: auto;
-  font-family: 'Courier New', monospace;
-  font-size: 0.9rem;
-  line-height: 1.4;
-  background: #1e1e1e;
-  color: #00ff00;
-  padding: 1rem;
-  border-radius: 4px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 1rem;
+  line-height: 1.5;
+  background: #263238;
+  color: #4fc3f7;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 1px solid #37474f;
+}
+
+.console-content pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .royal-gambit-demo {
+    padding: 0.5rem;
+  }
+  
+  .game-info {
+    grid-template-columns: 1fr;
+  }
+  
+  .board-grid {
+    width: 100%;
+    max-width: 520px;
+  }
+  
+  .square {
+    width: calc((100vw - 3rem) / 8);
+    height: calc((100vw - 3rem) / 8);
+    max-width: 64px;
+    max-height: 64px;
+    font-size: 1rem;
+  }
 }
 </style>
