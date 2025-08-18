@@ -81,9 +81,9 @@ describe('Spades Card Effects (Strike)', () => {
       
       // Strike different piece types
       expect(game.playCard('S2', 'e5')).toBe(true)  // Pawn
-      game.makeChessMove('d7', 'd6') // Black move
+      game.makeChessMove('h7', 'h6') // Black move
       expect(game.playCard('S4', 'c6')).toBe(true)  // Knight
-      game.makeChessMove('g8', 'f6') // Black move
+      game.makeChessMove('a7', 'a6') // Black move  
       expect(game.playCard('S6', 'c5')).toBe(true)  // Bishop
     })
 
@@ -104,7 +104,7 @@ describe('Spades Card Effects (Strike)', () => {
   describe('Ace of Spades (Royal Assassin) Effects', () => {
     it('should remove King only when King is in check', () => {
       // Create position where King is in check
-      const checkGame = createGameWithCheck('black')
+      let checkGame = createGameWithCheck('black')
       checkGame = createGameWithCards('white', ['SA'])
       
       if (checkGame.inCheck()) {
@@ -145,7 +145,7 @@ describe('Spades Card Effects (Strike)', () => {
 
     it('should be blocked by opponent discarding any Spade', () => {
       // Create check position
-      const checkGame = createGameWithCheck('black')
+      let checkGame = createGameWithCheck('black')
       checkGame = createGameWithCards('white', ['SA'])
       
       // Give black player Spades to block with
@@ -162,7 +162,7 @@ describe('Spades Card Effects (Strike)', () => {
       game = createGameWithCards('white', ['SA'])
       
       // Set up position with King in check and other pieces available
-      const checkGame = createGameWithCheck('black')
+      let checkGame = createGameWithCheck('black')
       checkGame = createGameWithCards('white', ['SA'])
       
       playMoveSequence(checkGame, [['d2', 'd4']]) // Make another piece available

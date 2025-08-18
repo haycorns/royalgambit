@@ -20,7 +20,8 @@ import {
   createGameWithCards,
   createGameWithPowerChain,
   playMoveSequence,
-  createGameWithCourtCards 
+  createGameWithCourtCards,
+  addCardsToGame 
 } from '../utils/test-helpers'
 import { cardFactory, cardScenarios } from '../fixtures/card-factories'
 import { CardSuit } from '../../types'
@@ -79,7 +80,7 @@ describe('Power Chains Mechanics', () => {
 
     it('should not activate across different players', () => {
       game = createGameWithCards('white', ['H5'])
-      game = createGameWithCards('black', ['H8'])
+      addCardsToGame(game, 'black', ['H8'])
       
       playMoveSequence(game, [['e2', 'e4'], ['e7', 'e5']])
       
@@ -118,7 +119,7 @@ describe('Power Chains Mechanics', () => {
 
     it('should track chains for each player independently', () => {
       game = createGameWithCards('white', ['H5', 'H8'])
-      game = createGameWithCards('black', ['S3', 'S7'])
+      addCardsToGame(game, 'black', ['S3', 'S7'])
       
       playMoveSequence(game, [['e2', 'e4'], ['e7', 'e5']])
       

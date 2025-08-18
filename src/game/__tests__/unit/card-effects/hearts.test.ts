@@ -96,7 +96,7 @@ describe('Hearts Card Effects (Rescue)', () => {
   describe('Hearts Ace Effects', () => {
     it('should move King out of check breaking normal rules', () => {
       // Create a check situation
-      const checkGame = createGameWithCheck('white')
+      let checkGame = createGameWithCheck('white')
       checkGame = createGameWithCards('white', ['HA'])
       
       if (checkGame.inCheck()) {
@@ -135,7 +135,7 @@ describe('Hearts Card Effects (Rescue)', () => {
     })
 
     it('should prioritize King rescue when multiple pieces available', () => {
-      const checkGame = createGameWithCheck('white')
+      let checkGame = createGameWithCheck('white')
       checkGame = createGameWithCards('white', ['HA'])
       
       // Ace should be able to rescue the King specifically

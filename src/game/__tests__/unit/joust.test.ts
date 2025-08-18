@@ -16,7 +16,8 @@ import '../utils/custom-matchers'
 import { 
   createFreshGame, 
   createGameWithCards,
-  playMoveSequence 
+  playMoveSequence,
+  addCardsToGame 
 } from '../utils/test-helpers'
 import { cardFactory, CardTestUtils } from '../fixtures/card-factories'
 import { ruleValidator } from '../utils/game-validators'
@@ -31,7 +32,7 @@ describe('Joust Mechanics', () => {
   describe('Joust Initiation', () => {
     it('should trigger when attacking opponent pieces', () => {
       game = createGameWithCards('white', ['S5']) // Attacker
-      game = createGameWithCards('black', ['HK']) // Defender
+      addCardsToGame(game, 'black', ['HK']) // Defender
       
       playMoveSequence(game, [['e2', 'e4'], ['e7', 'e5']])
       
@@ -66,7 +67,7 @@ describe('Joust Mechanics', () => {
 
     it('should only be available to defending player', () => {
       game = createGameWithCards('white', ['S3'])
-      game = createGameWithCards('black', ['HQ'])
+      addCardsToGame(game, 'black', ['HQ'])
       
       playMoveSequence(game, [['e2', 'e4'], ['e7', 'e5']])
       
@@ -143,7 +144,7 @@ describe('Joust Mechanics', () => {
       const defendCard = cardFactory.createCard('HK') // 13
       
       game = createGameWithCards('white', ['S5'])
-      game = createGameWithCards('black', ['HK'])
+      addCardsToGame(game, 'black', ['HK'])
       
       playMoveSequence(game, [['e2', 'e4'], ['e7', 'e5']])
       
@@ -161,7 +162,7 @@ describe('Joust Mechanics', () => {
       const defendCard = cardFactory.createCard('H7') // 7
       
       game = createGameWithCards('white', ['SA'])
-      game = createGameWithCards('black', ['H7'])
+      addCardsToGame(game, 'black', ['H7'])
       
       playMoveSequence(game, [['e2', 'e4'], ['e7', 'e5']])
       
@@ -179,7 +180,7 @@ describe('Joust Mechanics', () => {
       const defendCard = cardFactory.createCard('HQ') // 12
       
       game = createGameWithCards('white', ['SQ'])
-      game = createGameWithCards('black', ['HQ'])
+      addCardsToGame(game, 'black', ['HQ'])
       
       playMoveSequence(game, [['e2', 'e4'], ['e7', 'e5']])
       
@@ -194,7 +195,7 @@ describe('Joust Mechanics', () => {
 
     it('should discard both cards after joust', () => {
       game = createGameWithCards('white', ['S8'])
-      game = createGameWithCards('black', ['D10'])
+      addCardsToGame(game, 'black', ['D10'])
       
       const initialWhiteHand = game.getGameState().hands.white.length
       const initialBlackHand = game.getGameState().hands.black.length
@@ -438,7 +439,7 @@ describe('Joust Mechanics', () => {
       ]
       
       for (const { card, effect, target } of attackTypes) {
-        const testGame = createGameWithCards('white', [card])
+        let testGame = createGameWithCards('white', [card])
         testGame = createGameWithCards('black', ['HK'])
         
         playMoveSequence(testGame, [['e2', 'e4'], ['e7', 'e5']])
