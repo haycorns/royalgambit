@@ -30,26 +30,31 @@ export class PowerChainSpike {
     const heartK = this.cardSystem.createCard('HK')!
     const spade3 = this.cardSystem.createCard('S3')!
     
-    console.log('Initial power chain status:', this.game.getPowerChainStatus())
+    const initialStatus = this.game.getPowerChainStatus()
+    console.log('Initial power chain status:', `Suit: ${initialStatus.suit || 'None'}, Count: ${initialStatus.count}`)
     
     // First Hearts card - no power chain yet
     console.log('\n1. Playing first Hearts card...')
     this.playTestCard(heart5)
-    console.log('Power chain status:', this.game.getPowerChainStatus())
+    const status1 = this.game.getPowerChainStatus()
+    console.log('Power chain status:', `Suit: ${status1.suit || 'None'}, Count: ${status1.count}`)
     
     // Make a chess move to change turns
     this.game.makeChessMove('e2', 'e4')
-    console.log('After chess move, power chain status:', this.game.getPowerChainStatus())
+    const status2 = this.game.getPowerChainStatus()
+    console.log('After chess move, power chain status:', `Suit: ${status2.suit || 'None'}, Count: ${status2.count}`)
     
     // Second Hearts card - should activate power chain
     console.log('\n2. Playing second Hearts card...')
     this.playTestCard(heartK)
-    console.log('Power chain status:', this.game.getPowerChainStatus())
+    const status3 = this.game.getPowerChainStatus()
+    console.log('Power chain status:', `Suit: ${status3.suit || 'None'}, Count: ${status3.count}`)
     
     // Different suit - should reset power chain
     console.log('\n3. Playing different suit card...')
     this.playTestCard(spade3)
-    console.log('Power chain status:', this.game.getPowerChainStatus())
+    const status4 = this.game.getPowerChainStatus()
+    console.log('Power chain status:', `Suit: ${status4.suit || 'None'}, Count: ${status4.count}`)
   }
 
   /**
@@ -103,7 +108,8 @@ export class PowerChainSpike {
     console.log('3. White plays another Hearts card (should NOT be power chain - different player)')
     this.playTestCard(heartA)
     
-    console.log('Final power chain status:', this.game.getPowerChainStatus())
+    const finalStatus = this.game.getPowerChainStatus()
+    console.log('Final power chain status:', `Suit: ${finalStatus.suit || 'None'}, Count: ${finalStatus.count}`)
   }
 
   /**

@@ -162,7 +162,8 @@ function testCardSystem() {
   const court = game.value.getCurrentPlayerCourt()
   console.log('Current court:', court.map(c => c.id).join(', '))
   
-  console.log('Power chain status:', game.value.getPowerChainStatus())
+  const powerChainStatus = game.value.getPowerChainStatus()
+  console.log('Power chain status:', `Suit: ${powerChainStatus.suit || 'None'}, Count: ${powerChainStatus.count}`)
 }
 
 function makeTestMove() {
