@@ -57,6 +57,23 @@ export function createGameWithCards(player: 'white' | 'black', cardIds: string[]
 }
 
 /**
+ * Add cards to an existing game for a specific player
+ */
+export function addCardsToGame(game: RoyalGambitGame, player: 'white' | 'black', cardIds: string[]): void {
+  const gameState = game.getGameState()
+  const cardSystem = new CardSystem()
+  
+  // Clear existing hand and add specified cards
+  gameState.hands[player] = []
+  for (const cardId of cardIds) {
+    const card = cardSystem.createCard(cardId)
+    if (card) {
+      gameState.hands[player].push(card)
+    }
+  }
+}
+
+/**
  * Set up a game with specific court cards
  */
 export function createGameWithCourtCards(player: 'white' | 'black', cardIds: string[]): RoyalGambitGame {
@@ -100,17 +117,21 @@ export function createGameWithCheck(kingColor: 'white' | 'black'): RoyalGambitGa
   const game = new RoyalGambitGame()
   
   if (kingColor === 'white') {
-    // Set up a position where white king is in check
-    game.load('rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKB1R w KQkq - 0 2')
-    game.makeChessMove('d1', 'h5') // Queen attacks king area
-    game.makeChessMove('f7', 'f6') // Black moves
-    game.makeChessMove('h5', 'e8') // Check!
+    // Create a simple check position for white king
+    // Scholar's mate position where white king is in check
+    game.makeChessMove('e2', 'e4')
+    game.makeChessMove('e7', 'e5') 
+    game.makeChessMove('f2', 'f3')
+    game.makeChessMove('d8', 'h4') // Black queen checks white king
   } else {
-    // Set up a position where black king is in check
-    game.load('r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 3')
-    game.makeChessMove('f3', 'g5') // Attack f7
-    game.makeChessMove('f7', 'f6')
-    game.makeChessMove('d1', 'h5') // Check!
+    // Create a simple check position for black king
+    game.makeChessMove('e2', 'e4')
+    game.makeChessMove('e7', 'e5')
+    game.makeChessMove('d1', 'h5') // White queen attacks
+    game.makeChessMove('b8', 'c6')
+    game.makeChessMove('f1', 'c4')
+    game.makeChessMove('g8', 'f6')
+    game.makeChessMove('h5', 'f7') // Check the black king
   }
   
   return game
