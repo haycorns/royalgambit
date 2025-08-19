@@ -168,8 +168,21 @@ function testCardSystem() {
 
 function makeTestMove() {
   console.log('\n♟️ Testing Chess Move...')
-  const success = game.value.makeChessMove('e2', 'e4')
-  console.log('Move e2-e4 success:', success)
+  
+  // Get all legal moves
+  const legalMoves = game.value.moves({ verbose: true })
+  
+  if (legalMoves.length === 0) {
+    console.log('No legal moves available!')
+    return
+  }
+  
+  // Pick a random legal move
+  const randomMove = legalMoves[Math.floor(Math.random() * legalMoves.length)]
+  
+  console.log(`Attempting move: ${randomMove.from}-${randomMove.to}`)
+  const success = game.value.makeChessMove(randomMove.from, randomMove.to)
+  console.log(`Move ${randomMove.from}-${randomMove.to} success: ${success}`)
   updateGameState()
 }
 
