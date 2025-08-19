@@ -15,7 +15,8 @@ import {
   createGameWithCards,
   createGameWithPowerChain,
   createGameWithCheck,
-  playMoveSequence 
+  playMoveSequence,
+  addCardsToGame
 } from '../../utils/test-helpers'
 import { cardFactory } from '../../fixtures/card-factories'
 import { CardSuit } from '../../../types'
@@ -74,7 +75,11 @@ describe('Hearts Card Effects (Rescue)', () => {
     it('should not allow moving opponent pieces', () => {
       game = createGameWithCards('white', ['H6'])
       
-      // Try to move opponent's piece
+      // First make a move to put a black piece on e6
+      game.makeChessMove('e2', 'e4')
+      game.makeChessMove('e7', 'e6') // Black pawn to e6
+      
+      // Try to rescue to square occupied by opponent piece
       const success = game.playCard('H6', 'e6') // Target opponent piece
       expect(success).toBe(false)
     })
@@ -129,17 +134,20 @@ describe('Hearts Card Effects (Rescue)', () => {
     it('should work when King is not in check', () => {
       game = createGameWithCards('white', ['HA'])
       
+      // Make some moves to create empty squares
+      playMoveSequence(game, [['e2', 'e4'], ['e7', 'e5']])
+      
       // King not in check, but still allow rescue move
-      const success = game.playCard('HA', 'd1') // Move king to adjacent square
+      const success = game.playCard('HA', 'e2') // Move king to now-empty square
       expect(success).toBe(true)
     })
 
     it('should prioritize King rescue when multiple pieces available', () => {
       let checkGame = createGameWithCheck('white')
-      checkGame = createGameWithCards('white', ['HA'])
+      addCardsToGame(checkGame, 'white', ['HA'])
       
       // Ace should be able to rescue the King specifically
-      const success = checkGame.playCard('HA', 'f1')
+      const success = checkGame.playCard('HA', 'f2') // Move king to empty square
       expect(success).toBe(true)
     })
   })
@@ -168,8 +176,11 @@ describe('Hearts Card Effects (Rescue)', () => {
       playMoveSequence(game, [['e2', 'e4'], ['e7', 'e5']])
       
       // Power chain Ace should move King + another piece
-      const success = game.playCard('HA', 'd1')
+      const success = game.playCard('HA', 'e2') // Move king to empty square
       expect(success).toBe(true)
+      
+      // King should have moved to target square
+      expect(game.get('e2' as any)?.type).toBe('k')
     })
 
     it('should not activate power chain without consecutive same suit', () => {
@@ -231,7 +242,7 @@ describe('Hearts Card Effects (Rescue)', () => {
       game = createGameWithCards('white', ['HK'])
       
       // Test rescue from corner positions
-      game.load('8/8/8/8/8/8/8/R6K w - - 0 1') // King in corner
+      game.load('k7/8/8/8/8/8/8/R6K w - - 0 1') // King in corner
       
       const success = game.playCard('HK', 'h2') // Rescue king to adjacent square
       expect(success).toBe(true)
@@ -284,7 +295,7 @@ describe('Hearts Card Effects (Rescue)', () => {
       // Set up simple endgame
       game.load('8/8/8/8/8/3k4/3P4/3K4 w - - 0 1')
       
-      const success = game.playCard('H8', 'd3') // Rescue pawn
+      const success = game.playCard('H8', 'd4') // Rescue pawn to empty square
       expect(success).toBe(true)
       expect(game).toHaveValidBoardState()
     })

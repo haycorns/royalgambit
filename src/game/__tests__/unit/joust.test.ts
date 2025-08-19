@@ -212,7 +212,7 @@ describe('Joust Mechanics', () => {
   describe('Joust Strategy and Edge Cases', () => {
     it('should allow defender to decline joust', () => {
       game = createGameWithCards('white', ['S6'])
-      game = createGameWithCards('black', ['H2']) // Low card
+      addCardsToGame(game, 'black', ['H2']) // Low card
       
       playMoveSequence(game, [['e2', 'e4'], ['e7', 'e5']])
       
@@ -241,7 +241,7 @@ describe('Joust Mechanics', () => {
 
     it('should handle joust with no cards in hand', () => {
       game = createGameWithCards('white', ['S9'])
-      game = createGameWithCards('black', []) // No cards to joust with
+      addCardsToGame(game, 'black', []) // No cards to joust with
       
       playMoveSequence(game, [['e2', 'e4'], ['e7', 'e5']])
       
@@ -292,7 +292,7 @@ describe('Joust Mechanics', () => {
 
     it('should allow fallback target if assassination blocked', () => {
       game = createGameWithCards('white', ['SA'])
-      game = createGameWithCards('black', ['S3']) // Blocking spade
+      addCardsToGame(game, 'black', ['S3']) // Blocking spade
       
       playMoveSequence(game, [['e2', 'e4'], ['e7', 'e5']])
       
@@ -339,7 +339,12 @@ describe('Joust Mechanics', () => {
       // Simulate multiple attacks that could trigger jousts
       for (let i = 0; i < attackCards.length; i++) {
         if (i > 0) {
-          playMoveSequence(game, [['d2', 'd3'], ['d7', 'd6']])
+          // Use valid moves for subsequent rounds
+          const whiteMoves = [['d2', 'd4'], ['f2', 'f4'], ['g2', 'g4']]
+          const blackMoves = [['d7', 'd6'], ['f7', 'f6'], ['g7', 'g6']]
+          if (i <= whiteMoves.length) {
+            playMoveSequence(game, [whiteMoves[i-1], blackMoves[i-1]])
+          }
         }
         
         // Each attack could potentially trigger joust
@@ -418,7 +423,7 @@ describe('Joust Mechanics', () => {
 
     it('should maintain turn order after joust', () => {
       game = createGameWithCards('white', ['S4'])
-      game = createGameWithCards('black', ['C9'])
+      addCardsToGame(game, 'black', ['C9'])
       
       expect(game).toBePlayerTurn('white')
       

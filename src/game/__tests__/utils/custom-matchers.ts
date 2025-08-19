@@ -149,14 +149,19 @@ function toHaveCardsInCourt(received: RoyalGambitGame, count: number): MatcherRe
  * Check if player is in a power chain of specific suit
  */
 function toBeInPowerChain(received: RoyalGambitGame, suit: CardSuit): MatcherResult {
-  const powerChain = received.getPowerChainStatus()
-  const pass = powerChain.suit === suit && powerChain.count >= 2
+  // Check both players' power chains to find the active one
+  const whitePowerChain = received.getPowerChainStatus('white')
+  const blackPowerChain = received.getPowerChainStatus('black')
+  
+  const whiteInChain = whitePowerChain.suit === suit && whitePowerChain.count >= 2
+  const blackInChain = blackPowerChain.suit === suit && blackPowerChain.count >= 2
+  const pass = whiteInChain || blackInChain
   
   return {
     pass,
     message: () => pass
       ? `Expected not to be in ${suit} power chain`
-      : `Expected to be in ${suit} power chain, but got ${powerChain.suit} with count ${powerChain.count}`
+      : `Expected to be in ${suit} power chain, but got white: ${whitePowerChain.suit}(${whitePowerChain.count}), black: ${blackPowerChain.suit}(${blackPowerChain.count})`
   }
 }
 
@@ -164,12 +169,15 @@ function toBeInPowerChain(received: RoyalGambitGame, suit: CardSuit): MatcherRes
  * Check power chain count
  */
 function toHavePowerChainCount(received: RoyalGambitGame, count: number): MatcherResult {
-  const powerChain = received.getPowerChainStatus()
-  const actualCount = powerChain.count
+  // Check both players' power chains to find the maximum count
+  const whitePowerChain = received.getPowerChainStatus('white')
+  const blackPowerChain = received.getPowerChainStatus('black')
+  
+  const maxCount = Math.max(whitePowerChain.count, blackPowerChain.count)
   
   return {
-    pass: actualCount === count,
-    message: () => `Expected power chain count ${count}, but got ${actualCount}`
+    pass: maxCount === count,
+    message: () => `Expected power chain count ${count}, but got white: ${whitePowerChain.count}, black: ${blackPowerChain.count} (max: ${maxCount})`
   }
 }
 

@@ -56,13 +56,22 @@ export interface ChessMove {
 export interface CardPlay {
   card: Card
   effect: CardEffect
-  target?: string // Square or piece target
+  targets: CardTargets // Multiple target support
 }
 
 export interface CardEffect {
   type: 'rescue' | 'upgrade' | 'swap' | 'strike'
   isAce: boolean
   isPowerChain: boolean
+}
+
+export interface CardTargets {
+  source?: string      // For Hearts: which piece to move
+  destination?: string // For Hearts: where to move it
+  piece1?: string     // For Clubs: first piece to swap
+  piece2?: string     // For Clubs: second piece to swap  
+  target?: string     // For Spades/Diamonds: single target
+  targets?: string[]  // For Power Chain effects (multiple targets)
 }
 
 export type GameEvent = {

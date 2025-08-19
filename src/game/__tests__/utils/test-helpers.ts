@@ -41,17 +41,19 @@ export function createGameAtTurn(turnNumber: number): RoyalGambitGame {
  */
 export function createGameWithCards(player: 'white' | 'black', cardIds: string[]): RoyalGambitGame {
   const game = new RoyalGambitGame()
-  const gameState = game.getGameState()
   const cardSystem = new CardSystem()
+  const cards: Card[] = []
   
-  // Clear existing hand and add specified cards
-  gameState.hands[player] = []
+  // Create cards from IDs
   for (const cardId of cardIds) {
     const card = cardSystem.createCard(cardId)
     if (card) {
-      gameState.hands[player].push(card)
+      cards.push(card)
     }
   }
+  
+  // Set cards using the proper method
+  game.setPlayerCards(player, cards)
   
   return game
 }
@@ -60,17 +62,19 @@ export function createGameWithCards(player: 'white' | 'black', cardIds: string[]
  * Add cards to an existing game for a specific player
  */
 export function addCardsToGame(game: RoyalGambitGame, player: 'white' | 'black', cardIds: string[]): void {
-  const gameState = game.getGameState()
   const cardSystem = new CardSystem()
+  const cards: Card[] = []
   
-  // Clear existing hand and add specified cards
-  gameState.hands[player] = []
+  // Create cards from IDs
   for (const cardId of cardIds) {
     const card = cardSystem.createCard(cardId)
     if (card) {
-      gameState.hands[player].push(card)
+      cards.push(card)
     }
   }
+  
+  // Set cards using the proper method
+  game.setPlayerCards(player, cards)
 }
 
 /**
@@ -78,17 +82,19 @@ export function addCardsToGame(game: RoyalGambitGame, player: 'white' | 'black',
  */
 export function createGameWithCourtCards(player: 'white' | 'black', cardIds: string[]): RoyalGambitGame {
   const game = new RoyalGambitGame()
-  const gameState = game.getGameState()
   const cardSystem = new CardSystem()
+  const cards: Card[] = []
   
-  // Clear existing court and add specified cards
-  gameState.courtCards[player] = []
+  // Create cards from IDs
   for (const cardId of cardIds) {
     const card = cardSystem.createCard(cardId)
     if (card) {
-      gameState.courtCards[player].push(card)
+      cards.push(card)
     }
   }
+  
+  // Set court cards using the proper method
+  game.setPlayerCourtCards(player, cards)
   
   return game
 }
@@ -98,14 +104,9 @@ export function createGameWithCourtCards(player: 'white' | 'black', cardIds: str
  */
 export function createGameWithPowerChain(player: 'white' | 'black', suit: CardSuit, count: number): RoyalGambitGame {
   const game = new RoyalGambitGame()
-  const gameState = game.getGameState()
   
-  // Set up power chain state
-  gameState.powerChains[player] = { suit, count }
-  gameState.lastCardPlayed = {
-    player,
-    card: { suit, value: 'A' as any, id: 'test' }
-  }
+  // Set up power chain state using proper method
+  game.setPowerChain(player, suit, count)
   
   return game
 }
